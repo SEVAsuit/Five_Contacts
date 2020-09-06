@@ -13,8 +13,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 
 import com.example.fivecontacts.R;
+import com.example.fivecontacts.main.model.User;
 
 public class NovoUsuario extends AppCompatActivity {
 
@@ -23,6 +25,8 @@ public class NovoUsuario extends AppCompatActivity {
     EditText edUser;
     EditText edPass;
     EditText edNome;
+    EditText edEmail;
+    Switch swLogado;
     Button btCriar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +37,8 @@ public class NovoUsuario extends AppCompatActivity {
         edUser=findViewById(R.id.edT_Login2);
         edPass=findViewById(R.id.edt_Pass2);
         edNome=findViewById(R.id.edtNome);
+        edEmail=findViewById(R.id.editTextTextEmailAddress);
+        swLogado=findViewById(R.id.swLogado);
 
         //Evento de limpar Componente
         edUser.setOnTouchListener(new View.OnTouchListener() {
@@ -72,10 +78,17 @@ public class NovoUsuario extends AppCompatActivity {
             public void onClick(View view) {
 
 
-                String nome, login, senha;
+                String nome, login, senha,email;
                 nome = edNome.getText().toString();
                 login = edUser.getText().toString();
                 senha = edPass.getText().toString();
+                email=edEmail.getText().toString();
+
+                User user=new User(nome,login,senha,email);
+
+
+                boolean manterLogado;
+                manterLogado=swLogado.isChecked();
 
                 SharedPreferences salvaUser= getSharedPreferences("usuarioPadrao", Activity.MODE_PRIVATE);
                 SharedPreferences.Editor escritor= salvaUser.edit();
@@ -83,13 +96,16 @@ public class NovoUsuario extends AppCompatActivity {
                 escritor.putString("nome",nome);
                 escritor.putString("senha",senha);
                 escritor.putString("login",login);
+                escritor.putString("email",email);
+                escritor.putBoolean("manterLogado",manterLogado);
 
-                //Falta Salvar o E-mail
+                //Falta Salvar o E-mail//n mais
 
                 escritor.commit(); //Salva em Disco
 
 
                 Intent intent=new Intent(NovoUsuario.this,Pick_Contacts.class);
+                intent.putExtra("usuario",user);
                 startActivity(intent);
 
                 //Mesmo após a chamar de um startActivity o método continuará execuntando
